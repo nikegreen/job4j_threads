@@ -5,14 +5,13 @@ public class ConsoleProgress implements Runnable {
 
     @Override
     public void run() {
-        boolean loop = true;
-        while (loop) {
+        while (!Thread.currentThread().isInterrupted()) {
             for (char ch:process) {
                 System.out.print("\r load: " + ch);
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
-                    loop = false;
+                    Thread.currentThread().interrupt();
                     break;
                 }
             }
