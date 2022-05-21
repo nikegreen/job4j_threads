@@ -5,14 +5,16 @@ public class ConsoleProgress implements Runnable {
 
     @Override
     public void run() {
-        int index = 0;
-        while (!Thread.currentThread().isInterrupted()) {
-            System.out.print("\r load: " + process[index & 3]);
-            index++;
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                break;
+        boolean loop = true;
+        while (loop) {
+            for (char ch:process) {
+                System.out.print("\r load: " + ch);
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    loop = false;
+                    break;
+                }
             }
         }
     }
@@ -20,11 +22,7 @@ public class ConsoleProgress implements Runnable {
     public static void main(String[] args) throws InterruptedException {
         Thread progress = new Thread(new ConsoleProgress());
         progress.start();
-        try {
-            Thread.sleep(8000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        Thread.sleep(8000);
         progress.interrupt();
         progress.join(600);
     }
