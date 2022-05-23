@@ -18,10 +18,6 @@ public class Wget implements Runnable {
 
     /**
      *  speed [1 kByte / 1 sec]
-     *
-     *  speed_download = 1 kB / (delta [millisec]
-     *  = 1 kB / (delta [millisec] / 10000) [sec]
-     *  = 1 kB * 1000 / delta [kB / sec]
      */
     @Override
     public void run() {
@@ -30,11 +26,18 @@ public class Wget implements Runnable {
             byte[] dataBuffer = new byte[1024];
             int bytesRead;
             long start = System.currentTimeMillis();
+            long kBytesRead = 0;
             while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
                 fileOutputStream.write(dataBuffer, 0, bytesRead);
                 long delta = System.currentTimeMillis() - start;
-                Thread.sleep(1000 > speed * delta ? 1000 / speed - delta : 0);
-                start = System.currentTimeMillis();
+                kBytesRead++;
+                if (kBytesRead >= speed) {
+                    if (delta < 1000) {
+                        Thread.sleep(1000 - delta);
+                    }
+                    kBytesRead = 0;
+                    start = System.currentTimeMillis();
+                }
             }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
