@@ -3,7 +3,7 @@ package ru.job4j.concurrent;
 public class ConsoleProgress implements Runnable {
     @Override
     public void run() {
-        final char[] PROCESS = {'-', '\\', '|', '/'};
+        final char[] PROCESS = {'—', '\\', '|', '/'};
         while (!Thread.currentThread().isInterrupted()) {
             try {
                 for (char ch : PROCESS) {

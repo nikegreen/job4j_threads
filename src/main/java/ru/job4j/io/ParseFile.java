@@ -19,17 +19,17 @@ final public class ParseFile {
     }
 
     public synchronized String getContent(final Predicate<Character> filter) throws IOException {
-        String output = "";
+        StringBuilder output = new StringBuilder();
         try (InputStream i = new FileInputStream(file)) {
             try (BufferedInputStream bufferedInputStream = new BufferedInputStream(i, 200)) {
                 int data;
-                while ((data = bufferedInputStream.read()) > 0) {
+                while ((data = bufferedInputStream.read()) != -1) {
                     if (filter.test((char) data)) {
-                        output += (char) data;
+                        output.append((char) data);
                     }
                 }
             }
         }
-        return output;
+        return output.toString();
     }
 }
