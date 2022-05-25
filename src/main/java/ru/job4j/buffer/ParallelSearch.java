@@ -10,13 +10,12 @@ public class ParallelSearch {
         SimpleBlockingQueue<Integer> queue = new SimpleBlockingQueue<Integer>(4);
         final Thread consumer = new Thread(
                 () -> {
-                    try {
-                        while (true) {
+                    while (!Thread.currentThread().isInterrupted()) {
+                        try {
                             System.out.println(queue.poll());
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
                         }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                        Thread.currentThread().interrupt();
                     }
                     System.out.println("consumer finish");
                 }
