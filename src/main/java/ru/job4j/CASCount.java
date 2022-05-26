@@ -6,7 +6,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @ThreadSafe
 public class CASCount {
-    private final AtomicReference<Integer> count = new AtomicReference<>();
+    private final Integer counter = 0;
+    private final AtomicReference<Integer> count = new AtomicReference<>(counter);
 
     public void increment() {
         int temp;
@@ -20,6 +21,5 @@ public class CASCount {
     public int get() {
         return count.get();
     }
-
 }
 
