@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ThreadPool implements AutoCloseable {
-    final int size = Runtime.getRuntime().availableProcessors();
+    private final int size = Runtime.getRuntime().availableProcessors();
     private final List<Thread> threads = new LinkedList<>();
     private final SimpleBlockingQueue<Runnable> tasks = new SimpleBlockingQueue<>(4);
 
