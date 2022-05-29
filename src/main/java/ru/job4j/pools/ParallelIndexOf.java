@@ -1,21 +1,19 @@
 package ru.job4j.pools;
 
-import java.util.Arrays;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-public class ParallelIndexOf extends RecursiveTask<Integer> {
-    private final int limit = 10;
-    private final Object[] array;
+public class ParallelIndexOf<T> extends RecursiveTask<Integer> {
+    private final T[] array;
     private final int from;
     private final int to;
 
-    private final Object elem;
+    private final T elem;
 
-    public  ParallelIndexOf(Object[] array, int from, int to, Object elem) {
+    public  ParallelIndexOf(T[] array, int from, int to, T elem) {
         this.array = array;
         this.from = from;
         this.to = to;
@@ -24,13 +22,14 @@ public class ParallelIndexOf extends RecursiveTask<Integer> {
 
     @Override
     protected Integer compute() {
-        int len = to - from;
+        final int len = to - from;
+        final int limit = 10;
         if (len < limit) {
-            return Arrays.asList(array).indexOf(elem);
+            return indexOf(elem, from, to);
         }
         int mid = len / 2;
-        ParallelIndexOf left = new ParallelIndexOf(array, from, mid, elem);
-        ParallelIndexOf right = new ParallelIndexOf(array, mid + 1, to, elem);
+        ParallelIndexOf<T> left = new ParallelIndexOf<>(array, from, mid, elem);
+        ParallelIndexOf<T> right = new ParallelIndexOf<>(array, mid + 1, to, elem);
         left.fork();
         right.fork();
         int l = left.join();
@@ -42,9 +41,18 @@ public class ParallelIndexOf extends RecursiveTask<Integer> {
         return l == -1 || r == -1 ? max(l, r) : min(l, r);
     }
 
-    public static int indexOf(Object[] array, Object element) {
+    private int indexOf(T elem, int from, int to) {
+        for (int i = from; i <= to; i++) {
+            if (elem.equals(array[i])) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static <T> int indexOf(T[] array, T element) {
         ForkJoinPool forkJoinPool = new ForkJoinPool();
-        return forkJoinPool.invoke(new ParallelIndexOf(array, 0, array.length - 1, element));
+        return forkJoinPool.invoke(new ParallelIndexOf<>(array, 0, array.length - 1, element));
     }
 
     public static void main(String[] args) {
