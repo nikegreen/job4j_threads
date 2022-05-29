@@ -34,11 +34,7 @@ public class ParallelIndexOf<T> extends RecursiveTask<Integer> {
         right.fork();
         int l = left.join();
         int r = right.join();
-        return minIndex(l, r);
-    }
-
-    private Integer minIndex(int l, int r) {
-        return l == -1 || r == -1 ? max(l, r) : min(l, r);
+        return max(l, r);
     }
 
     private int indexOf(T elem, int from, int to) {
