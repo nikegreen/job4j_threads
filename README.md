@@ -1,3 +1,5 @@
+
+
 1. Запуск нити. Thread#start() 
 
 Уровень : 3. МидлКатегория : 3.1. MultithreadingТопик : 3.1.1. Threads
